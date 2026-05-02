@@ -11,15 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Khwarizmi.Application", "Kh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Khwarizmi.Infrastructure", "Khwarizmi.Infrastructure\Khwarizmi.Infrastructure.csproj", "{115414B1-4E04-4642-A17C-EAA75F452572}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{9C2E11C9-4ECE-48F3-9A4D-CDC217D58393}"
-	ProjectSection(SolutionItems) = preProject
-		C:\Users\karimabadi.r\Desktop\New folder (2)\الگوریتم تولید مرحله بازی مربع خوارزمی.pdf = C:\Users\karimabadi.r\Desktop\New folder (2)\الگوریتم تولید مرحله بازی مربع خوارزمی.pdf
-		C:\Users\karimabadi.r\Desktop\New folder (2)\راهکارهای مدیریت Serialization در لایه Domain.pdf = C:\Users\karimabadi.r\Desktop\New folder (2)\راهکارهای مدیریت Serialization در لایه Domain.pdf
-		C:\Users\karimabadi.r\Desktop\New folder (2)\ساختار لایه اپلیکیشن.pdf = C:\Users\karimabadi.r\Desktop\New folder (2)\ساختار لایه اپلیکیشن.pdf
-		C:\Users\karimabadi.r\Desktop\New folder (2)\ساختار لایه بندی پروژه مربع خوارزمی.pdf = C:\Users\karimabadi.r\Desktop\New folder (2)\ساختار لایه بندی پروژه مربع خوارزمی.pdf
-		C:\Users\karimabadi.r\Desktop\New folder (2)\قواعد و مکانیسم بازی پازل مربع خوارزمی.pdf = C:\Users\karimabadi.r\Desktop\New folder (2)\قواعد و مکانیسم بازی پازل مربع خوارزمی.pdf
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
