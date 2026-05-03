@@ -1,3 +1,47 @@
 ﻿@inherits LayoutComponentBase
+@using Khwarizmi.Application.Services
+@inject PlayerAppService PlayerService
 
-@Body
+<div class="page" dir="rtl">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">مربع خوارزمی</a>
+            <div class="d-flex text-white align-items-center">
+                @if (profile != null)
+                {
+                    <span class="me-3">سطح: @profile.Level</span>
+                    <span class="badge bg-primary">امتیاز: @profile.TotalScore</span>
+                }
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-9">
+                @Body
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">آمار بازیکن</div>
+                    <div class="card-body">
+                        @if (profile != null)
+                        {
+                            <p>تعداد حل شده: @profile.SolvedPuzzlesCount</p>
+                            <p>تجربه: @profile.ExperiencePoints</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+@code {
+    private Khwarizmi.Application.DTOs.PlayerProfileDto profile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        profile = await PlayerService.GetProfileAsync();
+    }
+}

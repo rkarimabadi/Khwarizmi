@@ -8,7 +8,7 @@ namespace Khwarizmi.Application.Services
     public class PlayerAppService
     {
         private readonly IPlayerRepository _playerRepository;
-        private Player _cachedPlayer;
+        private Player? _cachedPlayer;
 
         public List<string> Notifications { get; private set; } = new();
 

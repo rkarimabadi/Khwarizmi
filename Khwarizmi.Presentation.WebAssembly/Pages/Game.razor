@@ -1,0 +1,137 @@
+﻿@page "/"
+@page "/play"
+@using Khwarizmi.Application.Services
+@using Khwarizmi.Application.DTOs
+@inject PuzzleAppService PuzzleService
+
+@* Game Main Page: Acts as an orchestrator for Board and Inventory components.
+    Manages the overall game state and communication with the Application Service.
+*@
+
+<div class="game-container shadow rounded bg-white p-4" dir="rtl">
+    @if (puzzle == null)
+    {
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">در حال بارگذاری معمای خوارزمی...</p>
+        </div>
+    }
+    else
+    {
+        @* Header Section: Display target equation and action buttons *@
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <div>
+                <h3 class="mb-0">معادله هدف: <span class="badge bg-info text-dark">@puzzle.TargetEquation</span></h3>
+            </div>
+            <div class="actions">
+                <button class="btn btn-outline-secondary me-2" @onclick="RotateSelected" disabled="@(selectedTileId == null)">
+                    <i class="bi bi-arrow-clockwise"></i> چرخش
+                </button>
+                <button class="btn btn-success px-4" @onclick="CheckSolution">تایید نهایی</button>
+            </div>
+        </div>
+
+        <div class="row">
+            @* Board Section: Central area for tile placement *@
+            <div class="col-12 mb-4 d-flex justify-content-center">
+                <Board BoardColumns="@puzzle.BoardColumns" 
+                       BoardRows="@puzzle.BoardRows"
+                       PlacedTiles="@puzzle.Board"
+                       SelectedTileId="@selectedTileId"
+                       OnTileSelected="HandleTileSelect"
+                       OnTileDragStarted="HandleDragStart"
+                       OnTileDropped="HandleDropOnBoard" />
+            </div>
+
+            @* Inventory Section: Area for available tiles *@
+            <div class="col-12">
+                <Inventory PlacedTiles="@puzzle.Inventory"
+                           SelectedTileId="@selectedTileId"
+                           OnTileSelected="HandleTileSelect"
+                           OnTileDragStarted="HandleDragStart"
+                           OnTileDropped="HandleDropOnInventory" />
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private PuzzleDto? puzzle;
+    private Guid? selectedTileId;
+    private Guid? draggedTileId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNewPuzzle();
+    }
+
+    private async Task LoadNewPuzzle()
+    {
+        puzzle = await PuzzleService.StartNewSessionAsync();
+        selectedTileId = null;
+        draggedTileId = null;
+    }
+
+    private void HandleTileSelect(Guid tileId)
+    {
+        selectedTileId = tileId;
+    }
+
+    private void HandleDragStart(Guid tileId)
+    {
+        draggedTileId = tileId;
+        selectedTileId = tileId;
+    }
+
+    private async Task HandleDropOnBoard((Guid _, int X, int Y) args)
+    {
+        if (draggedTileId == null || puzzle == null) return;
+
+        try 
+        {
+            // Call application service to place the tile at grid coordinates
+            puzzle = await PuzzleService.PlaceTileAsync(puzzle.Id, draggedTileId.Value, args.X, args.Y);
+        }
+        catch (Exception ex)
+        {
+            // Error handling logic (e.g., tile overlap or out of bounds)
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            draggedTileId = null;
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleDropOnInventory()
+    {
+        if (draggedTileId == null || puzzle == null) return;
+
+        // Call service to return the tile from board to inventory
+        puzzle = await PuzzleService.RemoveTileFromBoardAsync(puzzle.Id, draggedTileId.Value);
+        draggedTileId = null;
+        StateHasChanged();
+    }
+
+    private async Task RotateSelected()
+    {
+        if (selectedTileId == null || puzzle == null) return;
+        
+        puzzle = await PuzzleService.RotateTileAsync(puzzle.Id, selectedTileId.Value);
+        StateHasChanged();
+    }
+
+    private async Task CheckSolution()
+    {
+        if (puzzle == null) return;
+        
+        bool isCorrect = await PuzzleService.CheckSolutionAsync(puzzle.Id);
+        
+        if (isCorrect) 
+        {
+            // On success, load the next level/puzzle
+            await LoadNewPuzzle();
+        }
+    }
+}

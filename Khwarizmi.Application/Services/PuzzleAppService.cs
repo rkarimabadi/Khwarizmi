@@ -14,6 +14,7 @@ namespace Khwarizmi.Application.Services
         private readonly DifficultyEvaluator _difficultyEvaluator;
         private readonly IPuzzleRepository _puzzleRepository;
         private readonly IPlayerRepository _playerRepository;
+        public event Action<TilePlacedEvent>? OnTilePlacedInUi;
 
         public PuzzleAppService(
             PuzzleGenerator generator,
@@ -28,7 +29,6 @@ namespace Khwarizmi.Application.Services
             _puzzleRepository = puzzleRepository;
             _playerRepository = playerRepository;
         }
-        public event Action<TilePlacedEvent> OnTilePlacedInUi;
 
         public async Task<PuzzleDto> PlaceTileAsync(Guid puzzleId, Guid tileId, int x, int y)
         {
@@ -68,7 +68,25 @@ namespace Khwarizmi.Application.Services
             return MapToDto(newPuzzle);
         }
 
+        public async Task<PuzzleDto> RemoveTileFromBoardAsync(Guid puzzleId, Guid tileId)
+        {
+            var puzzle = await _puzzleRepository.GetByIdAsync(puzzleId);
+            if (puzzle == null) throw new Exception("پازل یافت نشد.");
 
+            // پیدا کردن قطعه در لیست قطعات قرار داده شده
+            var tile = puzzle.PlacedTiles.FirstOrDefault(t => t.Id == tileId);
+
+            if (tile != null)
+            {
+                // فراخوانی متد دامنه برای پاک کردن پوزیشن
+                tile.RemoveFromBoard();
+
+                // ذخیره وضعیت جدید در زیرساخت
+                await _puzzleRepository.SaveAsync(puzzle);
+            }
+
+            return MapToDto(puzzle);
+        }
 
         public async Task<PuzzleDto> RotateTileAsync(Guid puzzleId, Guid tileId)
         {

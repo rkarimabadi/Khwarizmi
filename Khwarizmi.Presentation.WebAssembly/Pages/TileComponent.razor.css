@@ -1,0 +1,53 @@
+﻿.tile {
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+    .tile:hover {
+        filter: brightness(0.9);
+    }
+
+    .tile.selected {
+        border-color: #ff9800;
+        box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+        z-index: 100;
+    }
+
+.tile-label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    background: rgba(255,255,255,0.7);
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* تعریف هاشورها بر اساس مستندات طراحی */
+.hatch-x-x {
+    background-color: #ff4444;
+}
+/* x^2 قرمز */
+.hatch-y-y {
+    background-color: #ffeb3b;
+}
+/* y^2 زرد */
+.hatch-none-none {
+    background-color: #ffffff;
+}
+/* واحد سفید */
+
+/* هاشورهای ترکیبی (Striped) */
+.hatch-x-y, .hatch-y-x {
+    background: repeating-linear-gradient( 45deg, #ff4444, #ff4444 10px, #ffeb3b 10px, #ffeb3b 20px );
+}
+
+.hatch-x-none, .hatch-none-x {
+    background: repeating-linear-gradient( 45deg, #ff4444, #ff4444 10px, #ffffff 10px, #ffffff 20px );
+}

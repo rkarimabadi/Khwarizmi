@@ -1,0 +1,66 @@
+﻿@using Khwarizmi.Application.DTOs
+
+@* TileComponent for Al-Khwarizmi's Square game.
+  Handles visual rendering of tiles, hatching patterns, and drag-and-drop initialization.
+*@
+
+<div class="tile @GetHatchClass() @(IsSelected ? "selected" : "")"
+     style="@GetTileStyle()"
+     draggable="true"
+     @ondragstart="HandleDragStart"
+     @onclick="HandleClick">
+    <div class="tile-label">@Tile.Type</div>
+</div>
+
+@code {
+    [Parameter] public TileDto Tile { get; set; } = default!;
+    [Parameter] public bool IsSelected { get; set; }
+    [Parameter] public EventCallback<Guid> OnSelected { get; set; }
+    [Parameter] public EventCallback<Guid> OnDragStarted { get; set; }
+
+    private string GetTileStyle()
+    {
+        // Define the base unit size in pixels
+        const int unitSize = 50;
+
+        var widthPx = Tile.Width * unitSize;
+        var heightPx = Tile.Height * unitSize;
+
+        var style = $"width: {widthPx}px; height: {heightPx}px;";
+
+        // Use absolute positioning if coordinates are provided (placed on board)
+        if (Tile.X.HasValue && Tile.Y.HasValue)
+        {
+            var leftPx = Tile.X.Value * unitSize;
+            var topPx = Tile.Y.Value * unitSize;
+            style += $" position: absolute; left: {leftPx}px; top: {topPx}px;";
+        }
+
+        return style;
+    }
+
+    private string GetHatchClass()
+    {
+        // Normalize variable types to determine CSS hatching classes
+        var wType = Tile.WidthVarType?.ToLower() ?? "none";
+        var hType = Tile.HeightVarType?.ToLower() ?? "none";
+
+        return $"hatch-{wType}-{hType}";
+    }
+
+    private async Task HandleClick()
+    {
+        if (OnSelected.HasDelegate)
+        {
+            await OnSelected.InvokeAsync(Tile.Id);
+        }
+    }
+
+    private async Task HandleDragStart()
+    {
+        if (OnDragStarted.HasDelegate)
+        {
+            await OnDragStarted.InvokeAsync(Tile.Id);
+        }
+    }
+}

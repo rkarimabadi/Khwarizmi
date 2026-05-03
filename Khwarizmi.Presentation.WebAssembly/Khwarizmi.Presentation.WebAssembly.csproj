@@ -13,6 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Khwarizmi.Application\Khwarizmi.Application.csproj" />
+    <ProjectReference Include="..\Khwarizmi.Infrastructure\Khwarizmi.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 

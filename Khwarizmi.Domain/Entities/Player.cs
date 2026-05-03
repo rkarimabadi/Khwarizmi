@@ -64,9 +64,15 @@ namespace Khwarizmi.Domain.Entities
 
         public void ClearEvents() => _domainEvents.Clear();
 
-        public (int count, double avgTime) GetStatistics()
+        public (int solvedCount, double averageTimeSeconds) GetStatistics()
         {
-            throw new NotImplementedException();
+            if (!_completedPuzzlesLog.Any())
+                return (0, 0);
+
+            int count = _completedPuzzlesLog.Count;
+            double avgTime = _completedPuzzlesLog.Average(r => r.SolveDuration.TotalSeconds);
+
+            return (count, avgTime);
         }
     }
 }

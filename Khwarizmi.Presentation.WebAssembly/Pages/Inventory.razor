@@ -1,0 +1,72 @@
+﻿@using Khwarizmi.Application.DTOs
+
+@* Board component for the Khwarizmi game. 
+    Handles the game grid, visual rendering of placed tiles, and drop events.
+*@
+
+<div class="board-area p-3 bg-dark rounded-3 shadow-inner">
+    <div class="board-wrapper position-relative bg-light border border-2"
+         style="@GetBoardStyle()"
+         ondragover="event.preventDefault();"
+         @ondrop="OnDropInternal">
+
+        @if (PlacedTiles != null)
+        {
+            @foreach (var tile in PlacedTiles)
+            {
+                <TileComponent @key="tile.Id"
+                               Tile="tile"
+                               IsSelected="@(SelectedTileId == tile.Id)"
+                               OnSelected="HandleTileSelected"
+                               OnDragStarted="HandleDragStarted" />
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public int BoardColumns { get; set; }
+    [Parameter] public int BoardRows { get; set; }
+    [Parameter] public List<TileDto> PlacedTiles { get; set; } = new();
+    [Parameter] public Guid? SelectedTileId { get; set; }
+    [Parameter] public EventCallback<Guid> OnTileSelected { get; set; }
+    [Parameter] public EventCallback<Guid> OnTileDragStarted { get; set; }
+    [Parameter] public EventCallback<(Guid TileId, int X, int Y)> OnTileDropped { get; set; }
+
+    private string GetBoardStyle()
+    {
+        return $"width: {BoardColumns * 50}px; height: {BoardRows * 50}px;";
+    }
+
+    private async Task OnDropInternal(DragEventArgs e)
+    {
+        // Grid calculation: each unit equals 50px
+        int x = (int)(e.OffsetX / 50);
+        int y = (int)(e.OffsetY / 50);
+
+        // Ensure coordinates are within board bounds
+        if (x >= 0 && x < BoardColumns && y >= 0 && y < BoardRows)
+        {
+            if (OnTileDropped.HasDelegate)
+            {
+                await OnTileDropped.InvokeAsync((Guid.Empty, x, y));
+            }
+        }
+    }
+
+    private async Task HandleTileSelected(Guid tileId)
+    {
+        if (OnTileSelected.HasDelegate)
+        {
+            await OnTileSelected.InvokeAsync(tileId);
+        }
+    }
+
+    private async Task HandleDragStarted(Guid tileId)
+    {
+        if (OnTileDragStarted.HasDelegate)
+        {
+            await OnTileDragStarted.InvokeAsync(tileId);
+        }
+    }
+}
