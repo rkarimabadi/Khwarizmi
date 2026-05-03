@@ -11,8 +11,8 @@ namespace Khwarizmi.Domain.Services
         {
             var (nx, ny, constant) = GetParametersForDifficulty(difficultyLevel);
 
-            var varX = new Variable(VariableType.X, 4); // Standard visual value
-            var varY = new Variable(VariableType.Y, 6); // Standard visual value
+            var varX = new Variable(VariableType.X, 4);
+            var varY = new Variable(VariableType.Y, 6);
             var varUnit = new Variable(VariableType.None, 1);
 
             var inventory = new List<Tile>();
@@ -41,7 +41,7 @@ namespace Khwarizmi.Domain.Services
 
             string equation = BuildEquationString(nx, ny, constant);
 
-            return new Puzzle(equation, inventory, new BoardSize(25, 25));
+            return new Puzzle(equation, inventory, new BoardSize(10, 10));
         }
 
         private (int nx, int ny, int constant) GetParametersForDifficulty(int level)

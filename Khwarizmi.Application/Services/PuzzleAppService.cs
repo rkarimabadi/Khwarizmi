@@ -73,15 +73,12 @@ namespace Khwarizmi.Application.Services
             var puzzle = await _puzzleRepository.GetByIdAsync(puzzleId);
             if (puzzle == null) throw new Exception("پازل یافت نشد.");
 
-            // پیدا کردن قطعه در لیست قطعات قرار داده شده
             var tile = puzzle.PlacedTiles.FirstOrDefault(t => t.Id == tileId);
 
             if (tile != null)
             {
-                // فراخوانی متد دامنه برای پاک کردن پوزیشن
                 tile.RemoveFromBoard();
 
-                // ذخیره وضعیت جدید در زیرساخت
                 await _puzzleRepository.SaveAsync(puzzle);
             }
 
@@ -106,7 +103,6 @@ namespace Khwarizmi.Application.Services
 
             if (puzzle == null || player == null) return false;
 
-            // ۱. بررسی صحت ریاضی چیدمان از طریق سرویس دامنه
             bool isValid = _validator.IsSolutionValid(
                 puzzle.TargetEquation,
                 puzzle.PlacedTiles);

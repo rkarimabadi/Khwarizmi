@@ -4,10 +4,6 @@
 @using Khwarizmi.Application.DTOs
 @inject PuzzleAppService PuzzleService
 
-@* Game Main Page: Acts as an orchestrator for Board and Inventory components.
-    Manages the overall game state and communication with the Application Service.
-*@
-
 <div class="game-container shadow rounded bg-white p-4" dir="rtl">
     @if (puzzle == null)
     {
@@ -32,7 +28,6 @@
         </div>
 
         <div class="row">
-            @* Board Section: Central area for tile placement *@
             <div class="col-12 mb-4 d-flex justify-content-center">
                 <Board BoardColumns="@puzzle.BoardColumns" 
                        BoardRows="@puzzle.BoardRows"
@@ -43,7 +38,6 @@
                        OnTileDropped="HandleDropOnBoard" />
             </div>
 
-            @* Inventory Section: Area for available tiles *@
             <div class="col-12">
                 <Inventory PlacedTiles="@puzzle.Inventory"
                            SelectedTileId="@selectedTileId"
